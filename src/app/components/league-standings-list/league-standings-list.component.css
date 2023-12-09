@@ -1,0 +1,55 @@
+
+a {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }                
+  .standings-table{
+    margin-left: 25%;
+    margin-right: 25%;
+   
+}
+  h2, h3{
+    text-align: center;
+    color: darkgreen;
+    font-size: medium;
+  }
+  #left{
+   float: left;
+  }
+  #right{
+   float: right;
+  }
+  .header-text {
+    color: cadetblue;
+    font-size: -webkit-xxx-large;
+    align-content: center;
+    text-align: center;
+    background-image: url('../../../assets/img/BannerA.PNG') !important;
+    background-size: cover;
+    height: 300px;
+  } 
+ 
+
+  .country-selector.mdc-button.mdc-button--raised.mat-mdc-raised-button.mat-unthemed.mat-mdc-button-base{
+    text-align: center;
+    color: whitesmoke;
+    font-size: x-large;
+    background-color: darkgreen;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  #myheader{
+    text-align: center;
+  }

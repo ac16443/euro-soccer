@@ -1,0 +1,77 @@
+<div id="container">
+
+
+    <h1 class="header-text">Europe League - 2023 </h1>
+    <h2 id="myheader">Which league are you interested for?</h2>
+
+    <button class="country-selector" mat-raised-button *ngFor="let country of countries"
+        (click)="selectCountry(country)" id="{{country.country}}Select">
+
+        {{ country.country }}
+    </button>
+
+    <ng-container *ngIf="standings && !isHide">
+        <h3>{{ standings.name }} : Standings</h3>
+        <div class="standings-table">
+
+
+            <table>
+                <tr>
+                    <th>Team</th>
+                    <th>Logo</th>
+                    <th>Games Played</th>
+                    <th>W</th>
+                    <th>L</th>
+                    <th>D</th>
+                    <th>Goal Difference</th>
+                    <th>Points</th>
+                </tr>
+                <tr *ngFor="let team of standings.standings[0]">
+
+                    <td> <button mat-button color="primary" (click)="teamresults(team.team.id)">{{ team.team.name
+                            }}</button></td>
+
+                    <td><img [src]="team.team.logo" alt="{{ team.team.name }} Logo" height="30"></td>
+                    <td>{{ team.all.played }}</td>
+                    <td>{{ team.all.win }}</td>
+                    <td>{{ team.all.lose }}</td>
+                    <td>{{ team.all.draw }}</td>
+                    <td>{{ team.goalsDiff }}</td>
+                    <td>{{ team.points }}</td>
+                </tr>
+            </table>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="results && isHide">
+        <h3>Last 10 Game Results</h3>
+        <div class="standings-table">
+            <table>
+                <tr>
+                    <th>Home Team</th>
+                    <th>Score</th>
+                    <th>Away Team</th>
+                </tr>
+                <tr *ngFor="let result of results">
+                    <td>
+                        <p id="left"><img [src]=" result.teams.home.logo" alt="{{ result.teams.home.logo}} Logo"
+                                height="30"></p>
+                        <p id="right">{{
+                            result.teams.home.name }}</p>
+                    </td>
+                    <td>{{ result.goals.home }} - {{ result.goals.away }}</td>
+                    <td>
+                        <p id="left">{{ result.teams.away.name }}</p>
+                        <p id="right"><img [src]=" result.teams.away.logo" alt="{{ result.teams.away.logo}} Logo"
+                                height="30"></p>
+                    </td>
+                </tr>
+            </table>
+            <button class="country-selector" mat-raised-button (click)="goBack()">
+
+                Go Back to Standings
+            </button>
+        </div>
+    </ng-container>
+
+</div>
