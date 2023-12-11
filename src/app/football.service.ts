@@ -1,13 +1,21 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import {
+  Standing,
+  Fixture,
+  LeagueStanding,
+  LeagueStandingResponse,
+  Country,
+  FixtureResponse,
+} from './components/league-standings-list/type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FootballService {
   private apiUrl = 'https://v3.football.api-sports.io';
-  private apiKey = '65dd4e61d733ae2f7fa41bfd85af3ff7';
+  private apiKey = '65dd4e61d733ae2f7fa41bfd85af3ff7'; // process.env['API_KEY'] || '';
   private headers = new HttpHeaders({
     'x-rapidapi-host': 'v3.football.api-sports.io',
     'x-rapidapi-key': this.apiKey,
@@ -15,21 +23,26 @@ export class FootballService {
 
   constructor(private http: HttpClient) {}
 
-  getStandings(leagueId: string, season: string): Observable<any> {
-    return this.http.get(
+  getStandings(
+    leagueId: number,
+    season: number
+  ): Observable<LeagueStandingResponse> {
+    return this.http.get<LeagueStandingResponse>(
       `${this.apiUrl}/standings?league=${leagueId}&season=${season}`,
       { headers: this.headers }
     );
   }
 
-  getTeamResults(teamId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/fixtures?team=${teamId}&last=10`, {
-      headers: this.headers,
-    });
+  getTeamResults(teamId: number): Observable<FixtureResponse> {
+    return this.http.get<FixtureResponse>(
+      `${this.apiUrl}/fixtures?team=${teamId}&last=10`,
+      {
+        headers: this.headers,
+      }
+    );
   }
 }
 
-//1. standing mock api
 // return of({
 //   get: 'standings',
 //   parameters: {

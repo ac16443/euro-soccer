@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
 import { FootballService } from '../../football.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { Country, Standings } from './type';
+import { MatRippleModule } from '@angular/material/core';
+
+import {
+  Country,
+  Standing,
+  Fixture,
+  LeagueStanding,
+  LeagueStandingResponse,
+} from './type';
 import {
   ActivatedRoute,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-league-standings-list',
@@ -24,11 +33,12 @@ import {
     RouterLinkActive,
     RouterOutlet,
     MatTableModule,
+    MatRippleModule,
   ],
   templateUrl: './league-standings-list.component.html',
   styleUrl: './league-standings-list.component.css',
 })
-export class LeagueStandingsListComponent {
+export class LeagueStandingsListComponent implements OnInit {
   countries: Country[] = [
     {
       id: 39,
@@ -71,24 +81,25 @@ export class LeagueStandingsListComponent {
       season: new Date().getFullYear(),
     },
   ];
-  selectedCountry: string | null = null;
-  teams: any[] = [];
-  standings: any; //Standings[]
-  results: any;
+
+  selectedCountry!: Country;
+  standings!: LeagueStanding;
+  results: Fixture[] = [];
   isHide: boolean = false;
 
   constructor(private service: FootballService) {}
 
   ngOnInit(): void {}
-  selectCountry(country: any): void {
+  selectCountry(country: Country): void {
     this.selectedCountry = country;
     this.service.getStandings(country.id, country.season).subscribe((res) => {
+      console.log('response', res);
       this.standings = res.response[0].league;
       console.log('Standings ', this.standings);
     });
   }
 
-  teamresults(teamId: string) {
+  teamresults(teamId: number) {
     this.service.getTeamResults(teamId).subscribe((results) => {
       console.log('Results', results);
       this.results = results?.response;
