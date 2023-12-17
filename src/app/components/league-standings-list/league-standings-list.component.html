@@ -1,77 +1,202 @@
-<div id="container">
+<mat-card>
 
+    <div id="container">
 
-    <h1 class="header-text">Europe League - 2023 </h1>
-    <h2 id="myheader">Which league are you interested for?</h2>
+        <h1 class="header-text">Europe League - 2023 </h1>
 
-    <button class="country-selector" mat-raised-button *ngFor="let country of countries"
-        (click)="selectCountry(country)" id="{{country.country}}Select">
-
-        {{ country.country }}
-    </button>
-
-    <ng-container *ngIf="standings && !isHide">
-        <h3>{{ standings.name }} : Standings</h3>
-        <div class="standings-table">
-
-
-            <table>
-                <tr>
-                    <th>Team</th>
-                    <th>Logo</th>
-                    <th>Games Played</th>
-                    <th>W</th>
-                    <th>L</th>
-                    <th>D</th>
-                    <th>Goal Difference</th>
-                    <th>Points</th>
-                </tr>
-                <tr *ngFor="let team of standings.standings[0]">
-
-                    <td> <button mat-button color="primary" (click)="teamresults(team.team.id)">{{ team.team.name
-                            }}</button></td>
-
-                    <td><img [src]="team.team.logo" alt="{{ team.team.name }} Logo" height="30"></td>
-                    <td>{{ team.all.played }}</td>
-                    <td>{{ team.all.win }}</td>
-                    <td>{{ team.all.lose }}</td>
-                    <td>{{ team.all.draw }}</td>
-                    <td>{{ team.goalsDiff }}</td>
-                    <td>{{ team.points }}</td>
-                </tr>
-            </table>
+        <h2 id="myheader">Which league are you interested for? </h2>
+        <div class="progress-bar">
+            <mat-progress-bar mode="determinate" [value]="probressValue"></mat-progress-bar>
         </div>
-    </ng-container>
 
-    <ng-container *ngIf="results && isHide">
-        <h3>Last 10 Game Results</h3>
-        <div class="standings-table">
-            <table>
-                <tr>
-                    <th>Home Team</th>
-                    <th>Score</th>
-                    <th>Away Team</th>
-                </tr>
-                <tr *ngFor="let result of results">
-                    <td>
-                        <p id="left"><img [src]=" result.teams.home.logo" alt="{{ result.teams.home.logo}} Logo"
-                                height="30"></p>
-                        <p id="right">{{
-                            result.teams.home.name }}</p>
-                    </td>
-                    <td>{{ result.goals.home }} - {{ result.goals.away }}</td>
-                    <td>
-                        <p id="left">{{ result.teams.away.name }}</p>
-                        <p id="right"><img [src]=" result.teams.away.logo" alt="{{ result.teams.away.logo}} Logo"
-                                height="30"></p>
-                    </td>
-                </tr>
-            </table>
-            <button class="country-selector" mat-raised-button (click)="goBack()">
+        <button class="country-selector" mat-raised-button *ngFor="let country of countries"
+            (click)="selectCountry(country)" id="{{country.country}}Select">
 
-                Go Back to Standings
-            </button>
-        </div>
-    </ng-container>
+            {{ country.country }}
+        </button>
+        <!-- <ng-container *ngIf="standings && !isHide">
+            <h3>{{ standings.name }} : Standings</h3>
+            <div class="standings-table">
 
-</div>
+                <table>
+                    <tr>
+                        <th>Team</th>
+                        <th>Logo</th>
+                        <th>Games Played</th>
+                        <th>Win</th>
+                        <th>Lose</th>
+                        <th>Draw</th>
+                        <th>Goal Difference</th>
+                        <th>Points</th>
+                    </tr>
+                    <tr *ngFor="let team of standings.standings[0]">
+
+                        <td> <button mat-button color="primary" (click)="teamresults(team.team.id)">{{ team.team.name
+                                }}</button></td>
+
+                        <td><img [src]="team.team.logo" alt="{{ team.team.name }} Logo" height="30"></td>
+                        <td>{{ team.all.played }}</td>
+                        <td>{{ team.all.win }}</td>
+                        <td>{{ team.all.lose }}</td>
+                        <td>{{ team.all.draw }}</td>
+                        <td>{{ team.goalsDiff }}</td>
+                        <td>{{ team.points }}</td>
+                    </tr>
+                </table>
+            </div>
+        </ng-container> -->
+
+        <!-- Display standings if available and not in a hidden state -->
+        <ng-container *ngIf="standings && !isHide">
+            <h3>{{ standings.name }} : Standings</h3>
+
+            <!-- Standings table using Angular Material mat-table -->
+            <div class="standings-table">
+                <table mat-table [dataSource]="standings.standings[0]" class="mat-elevation-z8">
+
+                    <!-- Team Column -->
+                    <ng-container matColumnDef="team">
+                        <th mat-header-cell *matHeaderCellDef> Team </th>
+                        <td mat-cell *matCellDef="let team">
+                            <button mat-button color="primary" (click)="teamresults(team.team.id)">{{ team.team.name
+                                }}</button>
+                        </td>
+                    </ng-container>
+
+                    <!-- Logo Column -->
+                    <ng-container matColumnDef="logo">
+                        <th mat-header-cell *matHeaderCellDef> Logo </th>
+                        <td mat-cell *matCellDef="let team">
+                            <img [src]="team.team.logo" alt="{{ team.team.name }} Logo" height="30">
+                        </td>
+                    </ng-container>
+
+                    <!-- Games Played Column -->
+                    <ng-container matColumnDef="played">
+                        <th mat-header-cell *matHeaderCellDef> Games Played </th>
+                        <td mat-cell *matCellDef="let team">{{ team.all.played }}</td>
+                    </ng-container>
+
+                    <!-- Win Column -->
+                    <ng-container matColumnDef="win">
+                        <th mat-header-cell *matHeaderCellDef> Win </th>
+                        <td mat-cell *matCellDef="let team">{{ team.all.win }}</td>
+                    </ng-container>
+
+                    <!-- Lose Column -->
+                    <ng-container matColumnDef="lose">
+                        <th mat-header-cell *matHeaderCellDef> Lose </th>
+                        <td mat-cell *matCellDef="let team">{{ team.all.lose }}</td>
+                    </ng-container>
+
+                    <!-- Draw Column -->
+                    <ng-container matColumnDef="draw">
+                        <th mat-header-cell *matHeaderCellDef> Draw </th>
+                        <td mat-cell *matCellDef="let team">{{ team.all.draw }}</td>
+                    </ng-container>
+
+                    <!-- Goal Difference Column -->
+                    <ng-container matColumnDef="goalsDiff">
+                        <th mat-header-cell *matHeaderCellDef> Goal Difference </th>
+                        <td mat-cell *matCellDef="let team">{{ team.goalsDiff }}</td>
+                    </ng-container>
+
+                    <!-- Points Column -->
+                    <ng-container matColumnDef="points">
+                        <th mat-header-cell *matHeaderCellDef> Points </th>
+                        <td mat-cell *matCellDef="let team">{{ team.points }}</td>
+                    </ng-container>
+
+                    <tr mat-header-row
+                        *matHeaderRowDef="['team', 'logo', 'played', 'win', 'lose', 'draw', 'goalsDiff', 'points']">
+                    </tr>
+                    <tr mat-row
+                        *matRowDef="let row; columns: ['team', 'logo', 'played', 'win', 'lose', 'draw', 'goalsDiff', 'points'];">
+                    </tr>
+                </table>
+            </div>
+        </ng-container>
+
+        <!-- <ng-container *ngIf="results && isHide">
+            <h3>Last 10 Game Results</h3>
+            <div class="standings-table">
+                <table>
+                    <tr>
+                        <th>Home Team</th>
+                        <th>Score</th>
+                        <th>Away Team</th>
+                    </tr>
+                    <tr *ngFor="let result of results">
+                        <td>
+                            <p id="left"><img [src]=" result.teams.home.logo" alt="{{ result.teams.home.logo}} Logo"
+                                    height="30"></p>
+                            <p id="right">{{
+                                result.teams.home.name }}</p>
+                        </td>
+                        <td>{{ result.goals.home }} - {{ result.goals.away }}</td>
+                        <td>
+                            <p id="left">{{ result.teams.away.name }}</p>
+                            <p id="right"><img [src]=" result.teams.away.logo" alt="{{ result.teams.away.logo}} Logo"
+                                    height="30"></p>
+                        </td>
+                    </tr>
+                </table>
+                <button class="country-selector" mat-raised-button (click)="goBack()">
+
+                    Go Back to Standings
+                </button>
+            </div>
+        </ng-container> -->
+
+        <!-- Display results if available and in a hidden state -->
+        <ng-container *ngIf="results && isHide">
+            <h3>Last 10 Game Results</h3>
+
+            <!-- Results table using Angular Material mat-table -->
+            <div class="standings-table">
+                <table mat-table [dataSource]="results" class="mat-elevation-z8">
+
+                    <!-- Home Team Column -->
+                    <ng-container matColumnDef="homeTeam">
+                        <th mat-header-cell *matHeaderCellDef> Home Team </th>
+                        <td mat-cell *matCellDef="let result">
+                            <p id="left"><img [src]="result.teams.home.logo" alt="{{ result.teams.home.logo}} Logo"
+                                    height="30"></p>
+                            <p id="right">{{ result.teams.home.name }}</p>
+                        </td>
+                    </ng-container>
+
+                    <!-- Score Column -->
+                    <ng-container matColumnDef="score">
+                        <th mat-header-cell *matHeaderCellDef> Score </th>
+                        <td mat-cell *matCellDef="let result">{{ result.goals.home }} - {{ result.goals.away }}</td>
+                    </ng-container>
+
+                    <!-- Away Team Column -->
+                    <ng-container matColumnDef="awayTeam">
+                        <th mat-header-cell *matHeaderCellDef> Away Team </th>
+                        <td mat-cell *matCellDef="let result">
+                            <p id="left">{{ result.teams.away.name }}</p>
+                            <p id="right"><img [src]="result.teams.away.logo" alt="{{ result.teams.away.logo}} Logo"
+                                    height="30"></p>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['homeTeam', 'score', 'awayTeam']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['homeTeam', 'score', 'awayTeam'];"></tr>
+                </table>
+
+                <!-- Button to go back to standings view -->
+                <button class="country-selector" mat-raised-button (click)="goBack()">Go Back to Standings</button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="isAccessDenied">
+            <div class="denied">
+                <h3>Your account is suspende...., check on Api.Football.com</h3>
+                <img src="../../../assets/img/account-suspended.PNG" alt=" Suspended img" width="400" height="300">
+            </div>
+        </ng-container>
+    </div>
+</mat-card>
+<h2 class="copyright-text">By Amelework Getnet: &copy; Dec-15-2023</h2>

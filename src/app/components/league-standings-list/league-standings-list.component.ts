@@ -1,16 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
 import { FootballService } from '../../football.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { Country, Standings } from './type';
-import {
-  ActivatedRoute,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { MatRippleModule } from '@angular/material/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { Country, Fixture, LeagueStanding } from './type';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-league-standings-list',
@@ -24,11 +23,14 @@ import {
     RouterLinkActive,
     RouterOutlet,
     MatTableModule,
+    MatRippleModule,
+    MatCardModule,
+    MatProgressBarModule,
   ],
   templateUrl: './league-standings-list.component.html',
   styleUrl: './league-standings-list.component.css',
 })
-export class LeagueStandingsListComponent {
+export class LeagueStandingsListComponent implements OnInit {
   countries: Country[] = [
     {
       id: 39,
@@ -71,32 +73,46 @@ export class LeagueStandingsListComponent {
       season: new Date().getFullYear(),
     },
   ];
-  selectedCountry: string | null = null;
-  teams: any[] = [];
-  standings: any; //Standings[]
-  results: any;
+
+  selectedCountry!: Country;
+  standings!: LeagueStanding;
+  results: Fixture[] = [];
   isHide: boolean = false;
+  isAccessDenied!: boolean;
+  probressValue: number = 0;
 
   constructor(private service: FootballService) {}
 
   ngOnInit(): void {}
-  selectCountry(country: any): void {
+  selectCountry(country: Country): void {
     this.selectedCountry = country;
+    this.probressValue = 30;
     this.service.getStandings(country.id, country.season).subscribe((res) => {
-      this.standings = res.response[0].league;
-      console.log('Standings ', this.standings);
+      // console.log('response', res);
+      try {
+        this.standings = res.response[0].league;
+        console.log('Standings ', this.standings);
+        this.isAccessDenied = false;
+        this.probressValue = 60;
+      } catch (error) {
+        console.log('Eroror msg...>', error);
+        //console.log('Eroror Error...>', res.errors.access);
+        this.isAccessDenied = true;
+      }
     });
   }
 
-  teamresults(teamId: string) {
+  teamresults(teamId: number) {
     this.service.getTeamResults(teamId).subscribe((results) => {
       console.log('Results', results);
       this.results = results?.response;
+      this.probressValue = 100;
     });
     this.isHide = true;
   }
 
   goBack() {
     this.isHide = false;
+    this.probressValue = 0;
   }
 }
